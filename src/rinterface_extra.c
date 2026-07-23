@@ -2517,8 +2517,20 @@ igraph_error_t Rx_igraph_progress_handler(const char *message, double percent,
   int px = 0;
   SEXP rho;
 #if R_VERSION >= R_Version(4, 6, 0)
+  /* R_getRegisteredNamespace() is public R API added in R 4.6.0 (documented in
+     "Writing R Extensions", declared in <Rinternals.h>, already included via
+     rinterface.h): a side-effect-free lookup of the registered namespace
+     environment. Some R-devel snapshots that already report >= 4.6.0 -- notably
+     the CSAN image used by the Sanitizer CI job -- predate the header
+     declaration, so under clang -std=gnu2x (C23) the call is an
+     undeclared-identifier error even though libR exports the symbol. Declaring
+     it here fixes that; it is a compatible redeclaration wherever the installed
+     header already provides it. */
+  extern SEXP R_getRegisteredNamespace(const char *name);
   rho = R_getRegisteredNamespace("igraph");
 #else
+  /* R < 4.6.0 has no R_getRegisteredNamespace(); evaluate getNamespace("igraph"),
+     which yields the same namespace environment. */
   SEXP l1 = PROTECT(Rf_install("getNamespace")); px++;
   SEXP l2 = PROTECT(Rf_ScalarString(PROTECT(Rf_mkChar("igraph")))); px += 2;
   SEXP l3 = PROTECT(Rf_lang2(l1, l2)); px++;
@@ -2541,8 +2553,20 @@ igraph_error_t Rx_igraph_status_handler(const char *message, void *data) {
   int px = 0;
   SEXP rho;
 #if R_VERSION >= R_Version(4, 6, 0)
+  /* R_getRegisteredNamespace() is public R API added in R 4.6.0 (documented in
+     "Writing R Extensions", declared in <Rinternals.h>, already included via
+     rinterface.h): a side-effect-free lookup of the registered namespace
+     environment. Some R-devel snapshots that already report >= 4.6.0 -- notably
+     the CSAN image used by the Sanitizer CI job -- predate the header
+     declaration, so under clang -std=gnu2x (C23) the call is an
+     undeclared-identifier error even though libR exports the symbol. Declaring
+     it here fixes that; it is a compatible redeclaration wherever the installed
+     header already provides it. */
+  extern SEXP R_getRegisteredNamespace(const char *name);
   rho = R_getRegisteredNamespace("igraph");
 #else
+  /* R < 4.6.0 has no R_getRegisteredNamespace(); evaluate getNamespace("igraph"),
+     which yields the same namespace environment. */
   SEXP l1 = PROTECT(Rf_install("getNamespace")); px++;
   SEXP l2 = PROTECT(Rf_ScalarString(PROTECT(Rf_mkChar("igraph")))); px += 2;
   SEXP l3 = PROTECT(Rf_lang2(l1, l2)); px++;
@@ -2652,8 +2676,20 @@ SEXP R_igraph_finalizer(void) {
   int px = 0;
   SEXP rho;
 #if R_VERSION >= R_Version(4, 6, 0)
+  /* R_getRegisteredNamespace() is public R API added in R 4.6.0 (documented in
+     "Writing R Extensions", declared in <Rinternals.h>, already included via
+     rinterface.h): a side-effect-free lookup of the registered namespace
+     environment. Some R-devel snapshots that already report >= 4.6.0 -- notably
+     the CSAN image used by the Sanitizer CI job -- predate the header
+     declaration, so under clang -std=gnu2x (C23) the call is an
+     undeclared-identifier error even though libR exports the symbol. Declaring
+     it here fixes that; it is a compatible redeclaration wherever the installed
+     header already provides it. */
+  extern SEXP R_getRegisteredNamespace(const char *name);
   rho = R_getRegisteredNamespace("igraph");
 #else
+  /* R < 4.6.0 has no R_getRegisteredNamespace(); evaluate getNamespace("igraph"),
+     which yields the same namespace environment. */
   SEXP l1 = PROTECT(Rf_install("getNamespace")); px++;
   SEXP l2 = PROTECT(Rf_ScalarString(PROTECT(Rf_mkChar("igraph")))); px += 2;
   SEXP l3 = PROTECT(Rf_lang2(l1, l2)); px++;
